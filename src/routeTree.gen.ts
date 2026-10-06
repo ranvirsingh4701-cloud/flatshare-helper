@@ -10,33 +10,122 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CreateRouteImport } from './routes/create'
+import { Route as JoinRouteImport } from './routes/join'
+import { Route as HCodeRouteImport } from './routes/h.$code'
+import { Route as HCodeIndexRouteImport } from './routes/h.$code.index'
+import { Route as HCodeAddRouteImport } from './routes/h.$code.add'
+import { Route as HCodeHistoryRouteImport } from './routes/h.$code.history'
+import { Route as HCodeSettleRouteImport } from './routes/h.$code.settle'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CreateRoute = CreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HCodeRoute = HCodeRouteImport.update({
+  id: '/h/$code',
+  path: '/h/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HCodeIndexRoute = HCodeIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => HCodeRoute,
+} as any)
+const HCodeAddRoute = HCodeAddRouteImport.update({
+  id: '/add',
+  path: '/add',
+  getParentRoute: () => HCodeRoute,
+} as any)
+const HCodeHistoryRoute = HCodeHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => HCodeRoute,
+} as any)
+const HCodeSettleRoute = HCodeSettleRouteImport.update({
+  id: '/settle',
+  path: '/settle',
+  getParentRoute: () => HCodeRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/create': typeof CreateRoute
+  '/join': typeof JoinRoute
+  '/h/$code': typeof HCodeRouteWithChildren
+  '/h/$code/add': typeof HCodeAddRoute
+  '/h/$code/history': typeof HCodeHistoryRoute
+  '/h/$code/settle': typeof HCodeSettleRoute
+  '/h/$code/': typeof HCodeIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/create': typeof CreateRoute
+  '/join': typeof JoinRoute
+  '/h/$code/add': typeof HCodeAddRoute
+  '/h/$code/history': typeof HCodeHistoryRoute
+  '/h/$code/settle': typeof HCodeSettleRoute
+  '/h/$code': typeof HCodeIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/create': typeof CreateRoute
+  '/join': typeof JoinRoute
+  '/h/$code': typeof HCodeRouteWithChildren
+  '/h/$code/add': typeof HCodeAddRoute
+  '/h/$code/history': typeof HCodeHistoryRoute
+  '/h/$code/settle': typeof HCodeSettleRoute
+  '/h/$code/': typeof HCodeIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/create'
+    | '/join'
+    | '/h/$code'
+    | '/h/$code/add'
+    | '/h/$code/history'
+    | '/h/$code/settle'
+    | '/h/$code/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/create'
+    | '/join'
+    | '/h/$code/add'
+    | '/h/$code/history'
+    | '/h/$code/settle'
+    | '/h/$code'
+  id:
+    | '__root__'
+    | '/'
+    | '/create'
+    | '/join'
+    | '/h/$code'
+    | '/h/$code/add'
+    | '/h/$code/history'
+    | '/h/$code/settle'
+    | '/h/$code/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CreateRoute: typeof CreateRoute
+  JoinRoute: typeof JoinRoute
+  HCodeRoute: typeof HCodeRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +137,79 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/create': {
+      id: '/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof CreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/h/$code': {
+      id: '/h/$code'
+      path: '/h/$code'
+      fullPath: '/h/$code'
+      preLoaderRoute: typeof HCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/h/$code/': {
+      id: '/h/$code/'
+      path: '/'
+      fullPath: '/h/$code/'
+      preLoaderRoute: typeof HCodeIndexRouteImport
+      parentRoute: typeof HCodeRoute
+    }
+    '/h/$code/add': {
+      id: '/h/$code/add'
+      path: '/add'
+      fullPath: '/h/$code/add'
+      preLoaderRoute: typeof HCodeAddRouteImport
+      parentRoute: typeof HCodeRoute
+    }
+    '/h/$code/history': {
+      id: '/h/$code/history'
+      path: '/history'
+      fullPath: '/h/$code/history'
+      preLoaderRoute: typeof HCodeHistoryRouteImport
+      parentRoute: typeof HCodeRoute
+    }
+    '/h/$code/settle': {
+      id: '/h/$code/settle'
+      path: '/settle'
+      fullPath: '/h/$code/settle'
+      preLoaderRoute: typeof HCodeSettleRouteImport
+      parentRoute: typeof HCodeRoute
+    }
   }
 }
 
+interface HCodeRouteChildren {
+  HCodeAddRoute: typeof HCodeAddRoute
+  HCodeHistoryRoute: typeof HCodeHistoryRoute
+  HCodeSettleRoute: typeof HCodeSettleRoute
+  HCodeIndexRoute: typeof HCodeIndexRoute
+}
+
+const HCodeRouteChildren: HCodeRouteChildren = {
+  HCodeAddRoute: HCodeAddRoute,
+  HCodeHistoryRoute: HCodeHistoryRoute,
+  HCodeSettleRoute: HCodeSettleRoute,
+  HCodeIndexRoute: HCodeIndexRoute,
+}
+
+const HCodeRouteWithChildren = HCodeRoute._addFileChildren(HCodeRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CreateRoute: CreateRoute,
+  JoinRoute: JoinRoute,
+  HCodeRoute: HCodeRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
