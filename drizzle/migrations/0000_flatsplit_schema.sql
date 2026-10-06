@@ -1,0 +1,11 @@
+CREATE TABLE public.households (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), name text NOT NULL, code text NOT NULL UNIQUE, created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE public.members (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), household_id uuid NOT NULL REFERENCES public.households(id) ON DELETE CASCADE, name text NOT NULL, created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE public.expenses (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), household_id uuid NOT NULL REFERENCES public.households(id) ON DELETE CASCADE, description text NOT NULL, amount numeric(12,2) NOT NULL CHECK (amount > 0), paid_by uuid NOT NULL REFERENCES public.members(id) ON DELETE CASCADE, date date NOT NULL DEFAULT current_date, created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE public.expense_participants (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), expense_id uuid NOT NULL REFERENCES public.expenses(id) ON DELETE CASCADE, member_id uuid NOT NULL REFERENCES public.members(id) ON DELETE CASCADE, share_amount numeric(12,2) NOT NULL);
+CREATE TABLE public.settlements (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), household_id uuid NOT NULL REFERENCES public.households(id) ON DELETE CASCADE, from_member uuid NOT NULL REFERENCES public.members(id) ON DELETE CASCADE, to_member uuid NOT NULL REFERENCES public.members(id) ON DELETE CASCADE, amount numeric(12,2) NOT NULL CHECK (amount > 0), created_at timestamptz NOT NULL DEFAULT now());
+GRANT ALL ON public.households, public.members, public.expenses, public.expense_participants, public.settlements TO service_role;
+ALTER TABLE public.households ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.members ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.expenses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.expense_participants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.settlements ENABLE ROW LEVEL SECURITY;

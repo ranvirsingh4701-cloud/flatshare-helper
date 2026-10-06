@@ -14,7 +14,186 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      expense_participants: {
+        Row: {
+          expense_id: string
+          id: string
+          member_id: string
+          share_amount: number
+        }
+        Insert: {
+          expense_id: string
+          id?: string
+          member_id: string
+          share_amount: number
+        }
+        Update: {
+          expense_id?: string
+          id?: string
+          member_id?: string
+          share_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expense_participants_expense_id_fkey"
+            columns: ["expense_id"]
+            isOneToOne: false
+            referencedRelation: "expenses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expense_participants_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expenses: {
+        Row: {
+          amount: number
+          created_at: string
+          date: string
+          description: string
+          household_id: string
+          id: string
+          paid_by: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          date?: string
+          description: string
+          household_id: string
+          id?: string
+          paid_by: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          date?: string
+          description?: string
+          household_id?: string
+          id?: string
+          paid_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_paid_by_fkey"
+            columns: ["paid_by"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      households: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      members: {
+        Row: {
+          created_at: string
+          household_id: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          household_id: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          household_id?: string
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "members_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      settlements: {
+        Row: {
+          amount: number
+          created_at: string
+          from_member: string
+          household_id: string
+          id: string
+          to_member: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          from_member: string
+          household_id: string
+          id?: string
+          to_member: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          from_member?: string
+          household_id?: string
+          id?: string
+          to_member?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settlements_from_member_fkey"
+            columns: ["from_member"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlements_household_id_fkey"
+            columns: ["household_id"]
+            isOneToOne: false
+            referencedRelation: "households"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "settlements_to_member_fkey"
+            columns: ["to_member"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
