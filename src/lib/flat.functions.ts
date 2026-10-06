@@ -56,7 +56,7 @@ async function insertExpense(hid: string, e: { description: string; amount: numb
 }
 
 export const createHousehold = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ householdName: name, yourName: name }).parse(d))
+  .validator((d) => z.object({ householdName: name, yourName: name }).parse(d))
   .handler(async ({ data }) => {
     const sb = await db();
     const hh = await insertHousehold(data.householdName);
@@ -88,7 +88,7 @@ export const createDemoHousehold = createServerFn({ method: "POST" }).handler(as
 });
 
 export const joinHousehold = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ code, yourName: name }).parse(d))
+  .validator((d) => z.object({ code, yourName: name }).parse(d))
   .handler(async ({ data }) => {
     const sb = await db();
     const hid = await householdId(data.code);
@@ -100,7 +100,7 @@ export const joinHousehold = createServerFn({ method: "POST" })
   });
 
 export const getHousehold = createServerFn({ method: "GET" })
-  .inputValidator((d) => z.object({ code }).parse(d))
+  .validator((d) => z.object({ code }).parse(d))
   .handler(async ({ data }) => {
     const sb = await db();
     const { data: hh, error } = await sb.from("households").select("*").eq("code", data.code).maybeSingle();
@@ -130,7 +130,7 @@ export const getHousehold = createServerFn({ method: "GET" })
   });
 
 export const addMember = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ code, name }).parse(d))
+  .validator((d) => z.object({ code, name }).parse(d))
   .handler(async ({ data }) => {
     const sb = await db();
     const hid = await householdId(data.code);
@@ -140,7 +140,7 @@ export const addMember = createServerFn({ method: "POST" })
   });
 
 export const addExpense = createServerFn({ method: "POST" })
-  .inputValidator((d) =>
+  .validator((d) =>
     z
       .object({
         code,
@@ -163,7 +163,7 @@ export const addExpense = createServerFn({ method: "POST" })
   });
 
 export const deleteExpense = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ code, id: z.string().uuid() }).parse(d))
+  .validator((d) => z.object({ code, id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
     const sb = await db();
     const hid = await householdId(data.code);
@@ -173,7 +173,7 @@ export const deleteExpense = createServerFn({ method: "POST" })
   });
 
 export const addSettlement = createServerFn({ method: "POST" })
-  .inputValidator((d) =>
+  .validator((d) =>
     z.object({ code, from: z.string().uuid(), to: z.string().uuid(), amount: z.number().positive() }).parse(d),
   )
   .handler(async ({ data }) => {
@@ -187,7 +187,7 @@ export const addSettlement = createServerFn({ method: "POST" })
   });
 
 export const deleteSettlement = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ code, id: z.string().uuid() }).parse(d))
+  .validator((d) => z.object({ code, id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
     const sb = await db();
     const hid = await householdId(data.code);

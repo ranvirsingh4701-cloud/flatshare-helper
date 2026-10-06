@@ -31,7 +31,7 @@ export const Route = createFileRoute("/h/$code")({
   errorComponent: ({ error, reset }: ErrorComponentProps) => (
     <div className="mx-auto max-w-md p-10 text-center">
       <h1 className="font-display text-2xl font-bold">Couldn't load household</h1>
-      <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
+      <p className="mt-2 text-sm text-muted-foreground">{(error as Error).message}</p>
       <Button className="mt-6" onClick={reset}>Try again</Button>
     </div>
   ),

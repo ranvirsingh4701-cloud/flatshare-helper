@@ -45,12 +45,13 @@ export function suggestPayments(bal: ReturnType<typeof computeBalances>) {
   const out: { from: string; fromName: string; to: string; toName: string; amount: number }[] = [];
   let i = 0, j = 0;
   while (i < debtors.length && j < creditors.length) {
-    const x = Math.min(debtors[i].amt, creditors[j].amt);
-    if (x > 0) out.push({ from: debtors[i].id, fromName: debtors[i].name, to: creditors[j].id, toName: creditors[j].name, amount: x / 100 });
-    debtors[i].amt -= x;
-    creditors[j].amt -= x;
-    if (debtors[i].amt === 0) i++;
-    if (creditors[j].amt === 0) j++;
+    const d = debtors[i]!, cr = creditors[j]!;
+    const x = Math.min(d.amt, cr.amt);
+    if (x > 0) out.push({ from: d.id, fromName: d.name, to: cr.id, toName: cr.name, amount: x / 100 });
+    d.amt -= x;
+    cr.amt -= x;
+    if (d.amt === 0) i++;
+    if (cr.amt === 0) j++;
   }
   return out;
 }

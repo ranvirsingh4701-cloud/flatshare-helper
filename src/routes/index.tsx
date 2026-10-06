@@ -22,7 +22,7 @@ function Landing() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [last, setLast] = useState<string | null>(null);
-  useEffect(() => setLast(readMe()._last ?? null), []);
+  useEffect(() => setLast(readMe()["_last"] ?? null), []);
 
   async function demo() {
     setLoading(true);

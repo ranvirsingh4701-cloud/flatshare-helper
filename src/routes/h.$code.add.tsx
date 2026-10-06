@@ -25,7 +25,7 @@ function AddExpense() {
   const [paidBy, setPaidBy] = useState("");
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [split, setSplit] = useState<string[]>(() => members.map((m) => m.id));
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Partial<Record<"desc" | "amount" | "paidBy" | "split" | "date", string>>>({});
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ function AddExpense() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    const errs: Record<string, string> = {};
+    const errs: Partial<Record<"desc" | "amount" | "paidBy" | "split" | "date", string>> = {};
     if (!desc.trim()) errs.desc = "What was it for?";
     if (!(amt > 0)) errs.amount = "Amount must be greater than 0";
     if (!paidBy) errs.paidBy = "Choose who paid";
