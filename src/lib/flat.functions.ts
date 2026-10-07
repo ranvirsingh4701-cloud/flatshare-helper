@@ -139,6 +139,24 @@ export const addMember = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const removeMember = createServerFn({ method: "POST" })
+  .validator((d) => z.object({ code, id: z.string().uuid() }).parse(d))
+  .handler(async ({ data }) => {
+    const sb = await db();
+    const hid = await householdId(data.code);
+    const [paid, shares, sent, received] = await Promise.all([
+      sb.from("expenses").select("id", { count: "exact", head: true }).eq("household_id", hid).eq("paid_by", data.id),
+      sb.from("expense_participants").select("id", { count: "exact", head: true }).eq("member_id", data.id),
+      sb.from("settlements").select("id", { count: "exact", head: true }).eq("household_id", hid).eq("from_member", data.id),
+      sb.from("settlements").select("id", { count: "exact", head: true }).eq("household_id", hid).eq("to_member", data.id),
+    ]);
+    const used = (paid.count ?? 0) + (shares.count ?? 0) + (sent.count ?? 0) + (received.count ?? 0);
+    if (used > 0) throw new Error("This flatmate has expenses or settlements and can't be removed.");
+    const { error } = await sb.from("members").delete().eq("id", data.id).eq("household_id", hid);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 export const addExpense = createServerFn({ method: "POST" })
   .validator((d) =>
     z
