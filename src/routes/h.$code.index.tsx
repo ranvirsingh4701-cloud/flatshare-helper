@@ -2,11 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { householdQuery, computeBalances, eur } from "@/lib/balances";
-import { addMember } from "@/lib/flat.functions";
+import { addMember, removeMember } from "@/lib/flat.functions";
 import { BalanceText, balanceLabel } from "@/components/Money";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, UserPlus, ArrowRight } from "lucide-react";
+import { Plus, UserPlus, ArrowRight, X } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -41,6 +41,17 @@ function Dashboard() {
     }
   }
 
+  async function remove(id: string, memberName: string) {
+    if (!window.confirm(`Remove ${memberName} from the flat?`)) return;
+    try {
+      await removeMember({ data: { code, id } });
+      await qc.invalidateQueries({ queryKey: householdQuery(code).queryKey });
+      toast.success("Flatmate removed");
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  }
+
   return (
     <div className="space-y-6">
       <section className="flex flex-wrap items-end justify-between gap-4 rounded-2xl bg-primary p-6 text-primary-foreground">
@@ -64,7 +75,18 @@ function Dashboard() {
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent font-display font-bold text-accent-foreground">{m.name[0]?.toUpperCase()}</div>
                   <p className="font-semibold">{m.name}</p>
                 </div>
-                <BalanceText value={m.balance} className="text-lg" />
+                <div className="flex items-center gap-1">
+                  <BalanceText value={m.balance} className="text-lg" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-negative"
+                    aria-label={`Remove ${m.name}`}
+                    onClick={() => remove(m.id, m.name)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
               <dl className="mt-3 grid grid-cols-3 gap-2 text-sm">
                 <div><dt className="text-muted-foreground">Paid</dt><dd className="font-medium tabular-nums">{eur(m.paid)}</dd></div>
