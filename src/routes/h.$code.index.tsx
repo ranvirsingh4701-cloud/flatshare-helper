@@ -41,6 +41,17 @@ function Dashboard() {
     }
   }
 
+  async function remove(id: string, memberName: string) {
+    if (!window.confirm(`Remove ${memberName} from the flat?`)) return;
+    try {
+      await removeMember({ data: { code, id } });
+      await qc.invalidateQueries({ queryKey: householdQuery(code).queryKey });
+      toast.success("Flatmate removed");
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  }
+
   return (
     <div className="space-y-6">
       <section className="flex flex-wrap items-end justify-between gap-4 rounded-2xl bg-primary p-6 text-primary-foreground">
