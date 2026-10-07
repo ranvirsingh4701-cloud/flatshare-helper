@@ -75,7 +75,18 @@ function Dashboard() {
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent font-display font-bold text-accent-foreground">{m.name[0]?.toUpperCase()}</div>
                   <p className="font-semibold">{m.name}</p>
                 </div>
-                <BalanceText value={m.balance} className="text-lg" />
+                <div className="flex items-center gap-1">
+                  <BalanceText value={m.balance} className="text-lg" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-negative"
+                    aria-label={`Remove ${m.name}`}
+                    onClick={() => remove(m.id, m.name)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
               <dl className="mt-3 grid grid-cols-3 gap-2 text-sm">
                 <div><dt className="text-muted-foreground">Paid</dt><dd className="font-medium tabular-nums">{eur(m.paid)}</dd></div>
