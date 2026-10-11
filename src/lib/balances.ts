@@ -9,6 +9,11 @@ export const householdQuery = (code: string) =>
 export const eur = (n: number) =>
   new Intl.NumberFormat("en-IE", { style: "currency", currency: "EUR" }).format(n);
 
+export const fmtMonth = (m: string) => {
+  const [y, mo] = m.split("-").map(Number);
+  return new Date(y, mo - 1, 1).toLocaleDateString("en-IE", { month: "long", year: "numeric" });
+};
+
 export const fmtDate = (d: string) =>
   new Date(d + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 

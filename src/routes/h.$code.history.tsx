@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { householdQuery, eur, fmtDate } from "@/lib/balances";
+import { householdQuery, eur, fmtDate, fmtMonth } from "@/lib/balances";
 import { deleteExpense } from "@/lib/flat.functions";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
