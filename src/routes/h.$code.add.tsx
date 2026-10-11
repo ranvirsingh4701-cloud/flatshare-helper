@@ -54,7 +54,7 @@ function AddExpense() {
     if (Object.keys(errs).length) return;
     setBusy(true);
     try {
-      await addExpense({ data: { code, description: desc, amount: Math.round(amt * 100) / 100, paidBy, date, participants: split } });
+      await addExpense({ data: { code, description: desc, amount: Math.round(amt * 100) / 100, paidBy, date, deadline, expenseMonth: month, participants: split } });
       await qc.invalidateQueries({ queryKey: householdQuery(code).queryKey });
       toast.success("Expense added");
       navigate({ to: "/h/$code", params: { code } });
@@ -85,6 +85,16 @@ function AddExpense() {
           <Label htmlFor="date">Date</Label>
           <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           {errors.date && <p className="text-sm text-destructive">{errors.date}</p>}
+        </div>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="deadline">Payment deadline <span className="text-muted-foreground font-normal">(optional)</span></Label>
+          <Input id="deadline" type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="month">Expense month</Label>
+          <Input id="month" type="month" value={month} onChange={(e) => setMonth(e.target.value)} />
         </div>
       </div>
       <div className="space-y-2">
