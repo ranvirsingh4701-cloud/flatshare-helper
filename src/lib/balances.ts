@@ -10,7 +10,7 @@ export const eur = (n: number) =>
   new Intl.NumberFormat("en-IE", { style: "currency", currency: "EUR" }).format(n);
 
 export const fmtMonth = (m: string) => {
-  const [y, mo] = m.split("-").map(Number);
+  const [y = 0, mo = 1] = m.split("-").map(Number);
   return new Date(y, mo - 1, 1).toLocaleDateString("en-IE", { month: "long", year: "numeric" });
 };
 
