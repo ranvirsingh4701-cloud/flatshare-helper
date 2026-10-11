@@ -24,6 +24,8 @@ function AddExpense() {
   const [amount, setAmount] = useState("");
   const [paidBy, setPaidBy] = useState("");
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [deadline, setDeadline] = useState("");
+  const [month, setMonth] = useState(() => new Date().toISOString().slice(0, 7));
   const [split, setSplit] = useState<string[]>(() => members.map((m) => m.id));
   const [errors, setErrors] = useState<Partial<Record<"desc" | "amount" | "paidBy" | "split" | "date", string>>>({});
   const [busy, setBusy] = useState(false);
