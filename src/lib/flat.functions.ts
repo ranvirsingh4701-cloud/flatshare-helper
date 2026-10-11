@@ -42,11 +42,22 @@ async function insertHousehold(hhName: string) {
   throw new Error("Could not generate a code, try again.");
 }
 
-async function insertExpense(hid: string, e: { description: string; amount: number; paidBy: string; date: string; participants: string[] }) {
+async function insertExpense(
+  hid: string,
+  e: { description: string; amount: number; paidBy: string; date: string; participants: string[]; deadline?: string; expenseMonth?: string },
+) {
   const sb = await db();
   const { data, error } = await sb
     .from("expenses")
-    .insert({ household_id: hid, description: e.description, amount: e.amount, paid_by: e.paidBy, date: e.date })
+    .insert({
+      household_id: hid,
+      description: e.description,
+      amount: e.amount,
+      paid_by: e.paidBy,
+      date: e.date,
+      deadline: e.deadline || null,
+      expense_month: e.expenseMonth || e.date.slice(0, 7),
+    })
     .select("id")
     .single();
   if (error) throw new Error(error.message);
@@ -110,7 +121,7 @@ export const getHousehold = createServerFn({ method: "GET" })
       sb.from("members").select("id,name,created_at").eq("household_id", hh.id).order("created_at"),
       sb
         .from("expenses")
-        .select("id,description,amount,paid_by,date,created_at,expense_participants(member_id,share_amount)")
+        .select("id,description,amount,paid_by,date,deadline,expense_month,created_at,expense_participants(member_id,share_amount)")
         .eq("household_id", hh.id)
         .order("date", { ascending: false })
         .order("created_at", { ascending: false }),
@@ -166,6 +177,8 @@ export const addExpense = createServerFn({ method: "POST" })
         amount: z.number().positive("Amount must be greater than 0").max(1_000_000),
         paidBy: z.string().uuid("Choose who paid"),
         date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        deadline: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().or(z.literal("")),
+        expenseMonth: z.string().regex(/^\d{4}-\d{2}$/).optional().or(z.literal("")),
         participants: z.array(z.string().uuid()).min(1, "Pick at least one person"),
       })
       .parse(d),

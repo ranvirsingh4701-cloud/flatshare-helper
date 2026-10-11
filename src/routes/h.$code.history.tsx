@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { householdQuery, eur, fmtDate } from "@/lib/balances";
+import { householdQuery, eur, fmtDate, fmtMonth } from "@/lib/balances";
 import { deleteExpense } from "@/lib/flat.functions";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -55,7 +55,11 @@ function History() {
                   <p className="font-semibold">{e.description}</p>
                   <p className="text-sm text-muted-foreground">Paid by {name(e.paid_by)}</p>
                   <p className="truncate text-sm text-muted-foreground">Split between {e.participants.map((p) => name(p.member_id)).join(", ")}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">{fmtDate(e.date)}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {fmtDate(e.date)}
+                    {e.expense_month && <> · {fmtMonth(e.expense_month)}</>}
+                    {e.deadline && <> · Due {fmtDate(e.deadline)}</>}
+                  </p>
                 </div>
                 <p className="font-display text-xl font-bold tabular-nums">{eur(e.amount)}</p>
               </button>
@@ -84,7 +88,11 @@ function History() {
             <>
               <DialogHeader>
                 <DialogTitle>{open.description}</DialogTitle>
-                <DialogDescription>{fmtDate(open.date)} · Paid by {name(open.paid_by)}</DialogDescription>
+                <DialogDescription>
+                  {fmtDate(open.date)} · Paid by {name(open.paid_by)}
+                  {open.expense_month && <> · {fmtMonth(open.expense_month)}</>}
+                  {open.deadline && <> · Due {fmtDate(open.deadline)}</>}
+                </DialogDescription>
               </DialogHeader>
               <p className="font-display text-3xl font-bold">{eur(open.amount)}</p>
               <ul className="divide-y rounded-lg border">
