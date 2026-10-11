@@ -17,6 +17,7 @@ export const Route = createFileRoute("/h/$code/")({
 function Dashboard() {
   const { code } = Route.useParams();
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const { data } = useSuspenseQuery(householdQuery(code));
   const [newName, setNewName] = useState("");
   const [adding, setAdding] = useState(false);
@@ -135,6 +136,16 @@ function Dashboard() {
             })}
           </ul>
         )}
+      </section>
+
+      <section className="rounded-2xl border border-negative/30 bg-negative-soft/40 p-5">
+        <h2 className="font-display text-lg font-bold text-negative">Danger zone</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Deleting this household removes it for everyone — all flatmates, expenses and settlements are gone for good.
+        </p>
+        <Button variant="outline" className="mt-3 border-negative/40 text-negative hover:bg-negative-soft hover:text-negative" onClick={removeHousehold}>
+          <Trash2 /> Delete household
+        </Button>
       </section>
     </div>
   );
