@@ -204,6 +204,26 @@ export const addSettlement = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const deleteHousehold = createServerFn({ method: "POST" })
+  .validator((d) => z.object({ code }).parse(d))
+  .handler(async ({ data }) => {
+    const sb = await db();
+    const hid = await householdId(data.code);
+    const { data: exps } = await sb.from("expenses").select("id").eq("household_id", hid);
+    const ids = (exps ?? []).map((e) => e.id);
+    if (ids.length) {
+      const { error } = await sb.from("expense_participants").delete().in("expense_id", ids);
+      if (error) throw new Error(error.message);
+    }
+    for (const t of ["expenses", "settlements", "members"] as const) {
+      const { error } = await sb.from(t).delete().eq("household_id", hid);
+      if (error) throw new Error(error.message);
+    }
+    const { error } = await sb.from("households").delete().eq("id", hid);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 export const deleteSettlement = createServerFn({ method: "POST" })
   .validator((d) => z.object({ code, id: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {

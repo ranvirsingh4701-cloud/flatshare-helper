@@ -1,12 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { householdQuery, computeBalances, eur } from "@/lib/balances";
-import { addMember, removeMember } from "@/lib/flat.functions";
+import { householdQuery, computeBalances, eur, forgetMe } from "@/lib/balances";
+import { addMember, removeMember, deleteHousehold } from "@/lib/flat.functions";
 import { BalanceText, balanceLabel } from "@/components/Money";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, UserPlus, ArrowRight, X } from "lucide-react";
+import { Plus, UserPlus, ArrowRight, X, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +17,7 @@ export const Route = createFileRoute("/h/$code/")({
 function Dashboard() {
   const { code } = Route.useParams();
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const { data } = useSuspenseQuery(householdQuery(code));
   const [newName, setNewName] = useState("");
   const [adding, setAdding] = useState(false);
@@ -47,6 +48,19 @@ function Dashboard() {
       await removeMember({ data: { code, id } });
       await qc.invalidateQueries({ queryKey: householdQuery(code).queryKey });
       toast.success("Flatmate removed");
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  }
+
+  async function removeHousehold() {
+    if (!window.confirm(`Delete "${data!.household.name}" for everyone? All expenses and settlements will be permanently removed.`)) return;
+    try {
+      await deleteHousehold({ data: { code } });
+      forgetMe(code);
+      qc.removeQueries({ queryKey: householdQuery(code).queryKey });
+      toast.success("Household deleted");
+      navigate({ to: "/" });
     } catch (err) {
       toast.error((err as Error).message);
     }
@@ -122,6 +136,16 @@ function Dashboard() {
             })}
           </ul>
         )}
+      </section>
+
+      <section className="rounded-2xl border border-negative/30 bg-negative-soft/40 p-5">
+        <h2 className="font-display text-lg font-bold text-negative">Danger zone</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Deleting this household removes it for everyone — all flatmates, expenses and settlements are gone for good.
+        </p>
+        <Button variant="outline" className="mt-3 border-negative/40 text-negative hover:bg-negative-soft hover:text-negative" onClick={removeHousehold}>
+          <Trash2 /> Delete household
+        </Button>
       </section>
     </div>
   );

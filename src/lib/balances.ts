@@ -65,6 +65,14 @@ export function saveMe(code: string, memberId: string) {
     localStorage.setItem(KEY, JSON.stringify(all));
   } catch {}
 }
+export function forgetMe(code: string) {
+  try {
+    const all = JSON.parse(localStorage.getItem(KEY) || "{}");
+    delete all[code.toUpperCase()];
+    if (all._last === code.toUpperCase()) delete all._last;
+    localStorage.setItem(KEY, JSON.stringify(all));
+  } catch {}
+}
 export function readMe(): Record<string, string> {
   try {
     return JSON.parse(localStorage.getItem(KEY) || "{}");
