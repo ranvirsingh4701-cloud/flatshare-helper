@@ -1,12 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { householdQuery, computeBalances, eur } from "@/lib/balances";
-import { addMember, removeMember } from "@/lib/flat.functions";
+import { householdQuery, computeBalances, eur, forgetMe } from "@/lib/balances";
+import { addMember, removeMember, deleteHousehold } from "@/lib/flat.functions";
 import { BalanceText, balanceLabel } from "@/components/Money";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, UserPlus, ArrowRight, X } from "lucide-react";
+import { Plus, UserPlus, ArrowRight, X, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
