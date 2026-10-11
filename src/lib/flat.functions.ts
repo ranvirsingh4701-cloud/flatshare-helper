@@ -44,7 +44,7 @@ async function insertHousehold(hhName: string) {
 
 async function insertExpense(
   hid: string,
-  e: { description: string; amount: number; paidBy: string; date: string; participants: string[]; deadline?: string; expenseMonth?: string },
+  e: { description: string; amount: number; paidBy: string; date: string; participants: string[]; deadline?: string | undefined; expenseMonth?: string | undefined },
 ) {
   const sb = await db();
   const { data, error } = await sb
