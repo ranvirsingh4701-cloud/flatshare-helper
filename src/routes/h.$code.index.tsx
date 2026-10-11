@@ -52,6 +52,19 @@ function Dashboard() {
     }
   }
 
+  async function removeHousehold() {
+    if (!window.confirm(`Delete "${data!.household.name}" for everyone? All expenses and settlements will be permanently removed.`)) return;
+    try {
+      await deleteHousehold({ data: { code } });
+      forgetMe(code);
+      qc.removeQueries({ queryKey: householdQuery(code).queryKey });
+      toast.success("Household deleted");
+      navigate({ to: "/" });
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  }
+
   return (
     <div className="space-y-6">
       <section className="flex flex-wrap items-end justify-between gap-4 rounded-2xl bg-primary p-6 text-primary-foreground">
