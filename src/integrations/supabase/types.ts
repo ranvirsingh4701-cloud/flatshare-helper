@@ -55,7 +55,9 @@ export type Database = {
           amount: number
           created_at: string
           date: string
+          deadline: string | null
           description: string
+          expense_month: string | null
           household_id: string
           id: string
           paid_by: string
@@ -64,7 +66,9 @@ export type Database = {
           amount: number
           created_at?: string
           date?: string
+          deadline?: string | null
           description: string
+          expense_month?: string | null
           household_id: string
           id?: string
           paid_by: string
@@ -73,7 +77,9 @@ export type Database = {
           amount?: number
           created_at?: string
           date?: string
+          deadline?: string | null
           description?: string
+          expense_month?: string | null
           household_id?: string
           id?: string
           paid_by?: string

@@ -1,0 +1,1 @@
+ALTER TABLE public.expenses ADD COLUMN deadline date; ALTER TABLE public.expenses ADD COLUMN expense_month text;
